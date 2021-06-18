@@ -17,6 +17,19 @@ import django_heroku
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# the following is needed in order to directly save email (unique) in db after Google Login
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+SOCIALACCOUNT_PROVIDERS = \
+    {
+        'google': {
+            'SCOPE': ['profile','email'],
+            'AUTH_PARAMS': {'access_type': 'online'}
+        }
+    }
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -40,7 +53,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',  # added
-    'battle',  # added
+    'django.contrib.sites',  # added
+
+    # local
+    'battle',
+
+    # allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # providers
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -131,5 +155,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+SITE_ID = 1
 
 django_heroku.settings(locals())
