@@ -16,6 +16,9 @@ def battle(request):
 @login_required(login_url='/not_authenticated')
 def choose(request):
     #print(request.user)  # getting the user in order to retrieve data from database
+
+    # note: we can add code to retrieve token here
+    # there will be a json instead of the following message
     return HttpResponse('I can see this because I am logged in', status=200)
 
 
