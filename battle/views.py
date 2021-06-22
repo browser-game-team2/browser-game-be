@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
-TEST_JSON = '{"winner":True,"army":{"S":0,"C":1,"D":2},"report":{1:{"a":3,"d":1},2:{"a":2,"d":1}}}'
+TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
 
 
 def index(request):
