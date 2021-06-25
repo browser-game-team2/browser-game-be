@@ -4,7 +4,7 @@ from algorithm import BattleAlgo
 import json
 
 class Response:
-    def __int__(self, result):
+    def __init__(self, result):
         self.response = Response.defineResult(result)
     
     @staticmethod
