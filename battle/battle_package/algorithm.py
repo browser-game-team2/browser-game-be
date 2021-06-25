@@ -2,7 +2,8 @@ import random
 import json
 from typing import Tuple
 
-from .request import Request
+from request import Request
+
 
 class BattleAlgo:
 
@@ -23,7 +24,7 @@ class BattleAlgo:
 		    if key == "de":
 			    de = value
 	    return de
-    
+
     @staticmethod
     def battle(at = dict, de = dict):
 	    focus, adv = BattleAlgo.deploy(at['F'], de['F'])	# see deploy()
@@ -123,14 +124,13 @@ class BattleAlgo:
 
 #test
 if __name__ == "__main__":
-    inputFE = '{"attacker":{"type":"human","name":"player x","mail":"player@mail.com","army":{"B":5,"C":7,"D":9,"F":1},\
-    "planet":"Venus"},"defender":{"type":"virtual","name":"computer 1","army":{"B":4,"C":8,"D":9,"F":1},"planet":"Mercury"}}'
-
-    request = Request(inputFE)
-    at = BattleAlgo.defineAttack(request)
-    de = BattleAlgo.defineDefender(request)
-    battle = BattleAlgo.battle(at, de)
-    print(battle)
+    
+	inputFE = '{"attacker":{"type":"human","name":"player x","mail":"player@mail.com","army":{"B":5,"C":7,"D":1,"F":1},\
+    	"planet":"Venus"},"defender":{"type":"virtual","name":"computer 1","army":{"B":4,"C":8,"D":9,"F":1},"planet":"Mercury"}}'
+	request = Request.defineBattle(inputFE)
+	at = BattleAlgo.defineAttack(request)
+	de = BattleAlgo.defineDefender(request)
+	print(BattleAlgo.battle(at,de))
 
     
 

@@ -10,6 +10,7 @@ class Request:
     @staticmethod
     def defineBattle(strFE):
         report = json.loads(strFE)
+        #print(type(report))
         jsonbattle = {}
         for key, value in report.items():
             if key == 'attacker':
@@ -32,5 +33,6 @@ if __name__ == "__main__":
     "planet":"Venus"},"defender":{"type":"virtual","name":"computer 1","army":{"B":4,"C":8,"D":9,"F":1},"planet":"Mercury"}}'
     
     request = Request(inputFE)
+    
     print(Request.test(request))
     
