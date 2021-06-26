@@ -57,6 +57,7 @@ INSTALLED_APPS = [
 
     # local
     'battle',
+    'authentication',
 
     # allauth
     'allauth',
