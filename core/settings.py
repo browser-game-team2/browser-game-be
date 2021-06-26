@@ -105,12 +105,23 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# To be modified in production
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# To be fixed in production
+'''
+1) In file .env -> export DATABASE_URL=sqlite:///db.sqlite3
+2) Here, only write:
+DATABASES = {
+    'default': env.dj_db_url("DATABASE_URL")
+}
+'''
+# LOCAL -> SQLITE (default Django)
+# PRODUCTION -> POSTGRESQL (default Heroku)
 
 
 # Password validation
