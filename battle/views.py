@@ -2,9 +2,15 @@ from django.shortcuts import render
 import json
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from allauth.socialaccount.models import SocialAccount, SocialToken
+# from battle.battle_package.request import Request
+# from battle.battle_package.algorithm import BattleAlgo
+# from battle.battle_package.response import Response
 
 TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
-
+inputFE = '{"attacker":{"type":"human","name":"player x","mail":"player@mail.com","army":{"B":1,"C":1,"D":1,"F":1},\
+"planet":"Venus"},"defender":{"type":"virtual","name":"computer 1","army":{"B":7,"C":8,"D":9,"F":2},"planet":"Mercury"}}'
 
 def index(request):
     message = "Welcome! Go to --> https://browsergameteam2.herokuapp.com/accounts/google/login/"
@@ -13,6 +19,17 @@ def index(request):
 
 def battle(request):
     #json_str = request.POST.get('data', '')
+    ### the following is the code that will be needed to call the external battle functions
+    #request = Request.defineBattle(inputFE)
+    # request = Request(inputFE)
+    #
+    # at = BattleAlgo.defineAttack(request.request)
+    # de = BattleAlgo.defineDefender(request.request)
+    # result = BattleAlgo.battle(at, de)
+    # battle_response = Response.defineResult(result)
+    # print(battle_response)
+    # return HttpResponse(battle_response, status=200, content_type='application/json')
+    ###
     return HttpResponse(TEST_JSON, status=200, content_type='application/json')
 
 
@@ -20,11 +37,24 @@ def battle(request):
 # if the user is not logged in, they will be displayed an unauthorized message (401)
 @login_required(login_url='/not_authenticated')
 def choose(request):
-    #print(request.user)  # getting the user in order to retrieve data from database
+    #print(request.user)
+    user_db = User.objects.get(username=request.user)  # request.user will be the Google username
+    username = user_db.username
+    # print(username)
+    # email = user_db.email
+    # print(email)
+    # note: the request.user value is always unique! Thus it can be directly used to retrieve token from db
+    social_account_db = SocialAccount.objects.get(user_id=user_db.id)
+    uid = social_account_db.uid
+    # print(social_account.extra_data)  # here is the mail also among the keys
+    social_token_db = SocialToken.objects.get(account_id=social_account_db.id)
+    token = social_token_db.token
 
-    # note: we can add code to retrieve token here
-    # there will be a json instead of the following message
-    return HttpResponse('I can see this because I am logged in', status=200)
+    data = {'username': username, 'token': token, 'uid': uid, 'unities': {"S": 6, "C": 15, "D": 30},
+            "F": [1, 2, 3], "budget": 30}
+
+    data_as_json = json.dumps(data)
+    return HttpResponse(data_as_json, status=200, content_type='application/json')
 
 
 def not_authenticated(request):
