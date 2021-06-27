@@ -10,9 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+
 from pathlib import Path
 import os
-import django_heroku
+# import django_heroku
+from environs import Env
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,10 +40,11 @@ SOCIALACCOUNT_PROVIDERS = \
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3i8!vjkf6nrmw5u1=t&*sw@b_ukf*+og*z48)_^+t(i8llugm4'
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -104,24 +110,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+# LOCAL -> SQLITE (default Django)
+# PRODUCTION -> POSTGRESQL (default Heroku)
 
-# To be modified in production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-# To be fixed in production
-'''
-1) In file .env -> export DATABASE_URL=sqlite:///db.sqlite3
-2) Here, only write:
 DATABASES = {
     'default': env.dj_db_url("DATABASE_URL")
 }
-'''
-# LOCAL -> SQLITE (default Django)
-# PRODUCTION -> POSTGRESQL (default Heroku)
 
 
 # Password validation
@@ -171,4 +165,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 SITE_ID = 1
 LOGIN_REDIRECT_URL = 'https://fervent-ritchie-10e796.netlify.app/'  # previously was /choose/
 
-django_heroku.settings(locals())
+# Activate Django-Heroku
+# django_heroku.settings(locals())
