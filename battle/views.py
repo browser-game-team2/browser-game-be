@@ -38,7 +38,7 @@ def battle(request):
 
 # the following (test) code is accessible only if the user is already logged in
 # if the user is not logged in, they will be displayed an unauthorized message (401)
-# @login_required(login_url='/not_authenticated')
+@login_required(login_url='/not_authenticated')
 def choose(request):
 
     user_auth = UserAuth(request)
