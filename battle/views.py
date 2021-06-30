@@ -5,19 +5,17 @@ from authentication.authentication_package.auth_data import UserAuth  # check th
 from .battle_package.request import Request
 from .battle_package.response import Response
 from .battle_package.algorithm import BattleAlgo
-# from django.contrib.auth.models import User
-# from allauth.socialaccount.models import SocialAccount, SocialToken
 
 
 # TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
 input_fe = '{"attacker":{"type":"human",' \
            '"name":"player x",' \
            '"mail":"player@mail.com",' \
-           '"army":{"B":24,"C":1,"D":1,"F":1},' \
+           '"army":{"S":24,"C":1,"D":1,"F":1},' \
            '"planet":"Venus"},' \
            '"defender":{"type":"virtual",' \
            '"name":"computer 1",' \
-           '"army":{"B":7,"C":8,"D":9,"F":2},' \
+           '"army":{"S":7,"C":8,"D":9,"F":2},' \
            '"planet":"Mercury"}}'
 
 

@@ -83,11 +83,11 @@ class BattleAlgo:
 	@staticmethod
 	def deploy(attacker_f, defender_f):
 		if (attacker_f == 1) and (defender_f == 1):
-			return 'B', 'n'  							# battleships focus
+			return 'S', 'n'  							# spaceships focus
 		if (attacker_f == 1) and (defender_f == 2):
 			return 'C', 'd'	 							# cruisers focus, defender's advantage
 		if (attacker_f == 1) and (defender_f == 3):
-			return 'B', 'a'  							# battleships focus, attacker's advantage
+			return 'S', 'a'  							# spaceships focus, attacker's advantage
 		if (attacker_f == 2) and (defender_f == 1):
 			return 'C', 'a'  							# cruisers focus, attacker's advantage
 		if (attacker_f == 2) and (defender_f == 2):
@@ -95,21 +95,21 @@ class BattleAlgo:
 		if (attacker_f == 2) and (defender_f == 3):
 			return 'D', 'd'  							# destroyers focus, defender's advantage
 		if (attacker_f == 3) and (defender_f == 1):
-			return 'B', 'd'  							# battleships focus, defender's advantage
+			return 'S', 'd'  							# spaceships focus, defender's advantage
 		if (attacker_f == 3) and (defender_f == 2):
 			return 'D', 'a'  							# destroyers focus, attacker's advantage
 		if (attacker_f == 3) and (defender_f == 3):
 			return 'D', 'n'  							# destroyers focus
 
 	@staticmethod
-	def roll_to_hit(ship, n):  # Gets a ship type (B, C or D) and the number of ships of that type
+	def roll_to_hit(ship, n):  # Gets a ship type (S, C or D) and the number of ships of that type
 		hits = 0
 		# each ship...
 		for i in range(n):
 			# ...rolls 2 six-sided dice and sums the results
 			roll = random.randrange(1, 7) + random.randrange(1, 7)
-			if ship == 'B':
-				if roll >= 5:  						# battleships get a hit with a result of 5+
+			if ship == 'S':
+				if roll >= 5:  						# spaceships get a hit with a result of 5+
 					hits += 1
 			if ship == 'C':
 				if roll >= 7:  						# cruisers get a hit with a result of 7+
@@ -127,11 +127,11 @@ class BattleAlgo:
 				fleet['D'] -= 1							# remove 1
 			elif fleet['C'] > 0:    					# if there are cruisers in the fleet
 				fleet['C'] -= 1							# remove 1
-			elif fleet['B'] > 0:    					# if there are battleships in the fleet
-				fleet['B'] -= 1							# remove 1
+			elif fleet['S'] > 0:    					# if there are spaceships in the fleet
+				fleet['S'] -= 1							# remove 1
 			else:										# if the fleet is empty
 				return False, i							# mark it as defeated and report casualties
-		if (fleet['B'] == 0) \
+		if (fleet['S'] == 0) \
 			and (fleet['C'] == 0) \
 			and (fleet['D'] == 0):
 			return False, n
@@ -143,11 +143,11 @@ if __name__ == "__main__":
 	inputFE = '{"attacker":{"type":"human",' \
 				'"name":"player x",' \
 				'"mail":"player@mail.com",' \
-				'"army":{"B":5,"C":7,"D":1,"F":1},' \
+				'"army":{"S":5,"C":7,"D":1,"F":1},' \
 				'"planet":"Venus"},' \
 				'"defender":{"type":"virtual",' \
 				'"name":"computer 1",' \
-				'"army":{"B":4,"C":8,"D":9,"F":1},' \
+				'"army":{"S":4,"C":8,"D":9,"F":1},' \
 				'"planet":"Mercury"}}'
 	request = Request(inputFE)
 	attacker_dict = BattleAlgo.define_attack(request.request)
