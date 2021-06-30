@@ -1,17 +1,24 @@
-from django.shortcuts import render
 import json
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from allauth.socialaccount.models import SocialAccount, SocialToken
-# from battle.battle_package.request import Request
-# from battle.battle_package.algorithm import BattleAlgo
-# from battle.battle_package.response import Response
-from authentication.authentication_package.auth_data import UserAuth
+from authentication.authentication_package.auth_data import UserAuth  # check this import
+from .battle_package.request import Request
+from .battle_package.response import Response
+from .battle_package.algorithm import BattleAlgo
+# from django.contrib.auth.models import User
+# from allauth.socialaccount.models import SocialAccount, SocialToken
 
-TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
-inputFE = '{"attacker":{"type":"human","name":"player x","mail":"player@mail.com","army":{"B":1,"C":1,"D":1,"F":1},\
-"planet":"Venus"},"defender":{"type":"virtual","name":"computer 1","army":{"B":7,"C":8,"D":9,"F":2},"planet":"Mercury"}}'
+
+# TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
+input_fe = '{"attacker":{"type":"human",' \
+           '"name":"player x",' \
+           '"mail":"player@mail.com",' \
+           '"army":{"B":24,"C":1,"D":1,"F":1},' \
+           '"planet":"Venus"},' \
+           '"defender":{"type":"virtual",' \
+           '"name":"computer 1",' \
+           '"army":{"B":7,"C":8,"D":9,"F":2},' \
+           '"planet":"Mercury"}}'
 
 
 def index(request):
@@ -21,19 +28,15 @@ def index(request):
 
 def battle(request):
     # json_str = request.POST.get('data', '')
-    ###
-    # the following is the code that will be needed to call the external battle functions
-    # request = Request.defineBattle(inputFE)
-    # request = Request(inputFE)
-    #
-    # at = BattleAlgo.defineAttack(request.request)
-    # de = BattleAlgo.defineDefender(request.request)
-    # result = BattleAlgo.battle(at, de)
-    # battle_response = Response.defineResult(result)
+    request = Request(input_fe)  # in production replace input_fe with json_str
+    attacker = BattleAlgo.define_attack(request.request)
+    defender = BattleAlgo.define_defender(request.request)
+    battle_result = BattleAlgo.battle(attacker, defender)
+    response = Response(battle_result)
+    battle_response = response.response
     # print(battle_response)
-    # return HttpResponse(battle_response, status=200, content_type='application/json')
-    ###
-    return HttpResponse(TEST_JSON, status=200, content_type='application/json')
+    return HttpResponse(battle_response, status=200, content_type='application/json')
+    # return HttpResponse(TEST_JSON, status=200, content_type='application/json')
 
 
 # the following (test) code is accessible only if the user is already logged in
@@ -57,9 +60,12 @@ def choose(request):
     token = AuthData.get_token(social_token_db)
     '''
 
-    data = {'username': user_auth.username, 'token': user_auth.token, 'uid': user_auth.uid,
+    data = {'username': user_auth.username,
+            'token': user_auth.token,
+            'uid': user_auth.uid,
             'unities': {"S": 6, "C": 15, "D": 30},
-            "F": [1, 2, 3], "budget": 30}
+            "F": [1, 2, 3],
+            "budget": 30}
 
     data_as_json = json.dumps(data)
     return HttpResponse(data_as_json, status=200, content_type='application/json')
@@ -67,5 +73,3 @@ def choose(request):
 
 def not_authenticated(request):
     return HttpResponse('not authorized: please sign in', status=401)
-
-
