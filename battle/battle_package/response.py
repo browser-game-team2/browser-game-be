@@ -27,11 +27,11 @@ if __name__ == "__main__":
     inputFE = '{"attacker":{"type":"human",' \
               '"name":"player x",' \
               '"mail":"player@mail.com",' \
-              '"army":{"B":5,"C":7,"D":1,"F":1},' \
+              '"army":{"S":5,"C":7,"D":1,"F":1},' \
               '"planet":"Venus"},' \
               '"defender":{"type":"virtual",' \
               '"name":"computer 1",' \
-              '"army":{"B":4,"C":8,"D":9,"F":1},' \
+              '"army":{"S":4,"C":8,"D":9,"F":1},' \
               '"planet":"Mercury"}}'
 
     request = Request(inputFE)
