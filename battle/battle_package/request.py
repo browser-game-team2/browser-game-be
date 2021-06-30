@@ -1,5 +1,6 @@
 import json
 
+
 class Request:
     #We pass a string type parameter to our constructor method, which will take care of returning a useful json
     def __init__(self, strFE):
@@ -35,4 +36,3 @@ if __name__ == "__main__":
     request = Request(inputFE)
     
     print(Request.test(request))
-    

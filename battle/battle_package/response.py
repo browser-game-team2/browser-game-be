@@ -1,5 +1,5 @@
-from request import Request
-from algorithm import BattleAlgo
+from battle.battle_package.request import Request
+from battle.battle_package.algorithm import BattleAlgo
 
 import json
 
