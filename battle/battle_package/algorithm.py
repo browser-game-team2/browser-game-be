@@ -7,24 +7,16 @@ class BattleAlgo:
 	@staticmethod
 	# The function takes care of defining a json containing the attacker's parameters
 	def define_attack(report):
-		attacker = {}
-		for key, value in report.items():
-			if key == "attacker":
-				attacker = value
-		return attacker
+		return report['attacker']
 
 	@staticmethod
 	# The function takes care of defining a json containing the parameters of the defender
 	def define_defender(report):
-		defender = {}
-		for key, value in report.items():
-			if key == "defender":
-				defender = value
-		return defender
+		return report['defender']
 
 	@staticmethod
 	def battle(attacker, defender):
-		focus, adv = BattleAlgo.deploy(attacker['F'], defender['F'])  # see deploy()
+		focus, advantage = BattleAlgo.deploy(attacker['F'], defender['F'])  # see deploy()
 		attacker_alive = True										  # attacking fleet has at least one ship
 		defender_alive = True										  # defending fleet has at least one ship
 		attacker_losses = 0											  # attacking fleet has taken no casualties
@@ -32,22 +24,22 @@ class BattleAlgo:
 		battle_report = {}  										  # set up the report dictionary
 
 		# The following block runs the 0-th turn, where only 'focus' ships of the 'adv' side can attack.
-		if adv == 'a':
+		if advantage == 'a':
 			# successful rolls by attacker on the focus ship type
 			attacker_hits = BattleAlgo.roll_to_hit(focus, attacker[focus])
 			# defender takes casualties
-			defender_alive, def_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
-		if adv == 'd':
+			defender_alive, defender_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
+		if advantage == 'd':
 			# successful rolls by defender on the focus ship type
 			defender_hits = BattleAlgo.roll_to_hit(focus, defender[focus])
 			# attacker takes casualties
-			attacker_alive, att_losses = BattleAlgo.remove_casualties(attacker, defender_hits)
-		if adv == 'n':
+			attacker_alive, attacker_losses = BattleAlgo.remove_casualties(attacker, defender_hits)
+		if advantage == 'n':
 			# both players roll to hit on the focus ship type
 			attacker_hits = BattleAlgo.roll_to_hit(focus, attacker[focus])
 			defender_hits = BattleAlgo.roll_to_hit(focus, defender[focus])
-			attacker_alive, att_losses = BattleAlgo.remove_casualties(attacker, defender_hits)  # and take casualties
-			defender_alive, def_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
+			attacker_alive, attacker_losses = BattleAlgo.remove_casualties(attacker, defender_hits)  # and take casualties
+			defender_alive, defender_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
 		battle_report[0] = {'a': attacker_losses, 'd': defender_losses}			# register casualties in the report
 
 		# The following block runs the main battle.
@@ -63,11 +55,11 @@ class BattleAlgo:
 			for ship_type in defender.keys():
 				defender_hits += BattleAlgo.roll_to_hit(ship_type, defender[ship_type])  # defender's successful rolls
 			# attacker takes casualties
-			attacker_alive, att_losses = BattleAlgo.remove_casualties(attacker, defender_hits)
+			attacker_alive, attacker_losses = BattleAlgo.remove_casualties(attacker, defender_hits)
 			# defender takes casualties
-			defender_alive, def_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
+			defender_alive, defender_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
 			# register casualties in the report
-			battle_report[count] = {'a': att_losses, 'd': def_losses}
+			battle_report[count] = {'a': attacker_losses, 'd': defender_losses}
 			# Next combat round
 			count += 1
 
@@ -82,24 +74,18 @@ class BattleAlgo:
 	# This affects the special turn at the beginning of the battle.
 	@staticmethod
 	def deploy(attacker_f, defender_f):
-		if (attacker_f == 1) and (defender_f == 1):
-			return 'S', 'n'  							# spaceships focus
-		if (attacker_f == 1) and (defender_f == 2):
-			return 'C', 'd'	 							# cruisers focus, defender's advantage
-		if (attacker_f == 1) and (defender_f == 3):
-			return 'S', 'a'  							# spaceships focus, attacker's advantage
-		if (attacker_f == 2) and (defender_f == 1):
-			return 'C', 'a'  							# cruisers focus, attacker's advantage
-		if (attacker_f == 2) and (defender_f == 2):
-			return 'C', 'n'  							# cruisers focus
-		if (attacker_f == 2) and (defender_f == 3):
-			return 'D', 'd'  							# destroyers focus, defender's advantage
-		if (attacker_f == 3) and (defender_f == 1):
-			return 'S', 'd'  							# spaceships focus, defender's advantage
-		if (attacker_f == 3) and (defender_f == 2):
-			return 'D', 'a'  							# destroyers focus, attacker's advantage
-		if (attacker_f == 3) and (defender_f == 3):
-			return 'D', 'n'  							# destroyers focus
+		combinations_focus_advantage = {
+			'11': ('S', 'n'),  # spaceships focus
+			'12': ('C', 'd'),  # cruisers focus, defender's advantage
+			'13': ('S', 'a'),  # spaceships focus, attacker's advantage
+			'21': ('C', 'a'),  # cruisers focus, attacker's advantage
+			'22': ('C', 'n'),  # cruisers focus
+			'23': ('D', 'd'),  # destroyers focus, defender's advantage
+			'31': ('S', 'd'),  # spaceships focus, defender's advantage
+			'32': ('D', 'a'),  # destroyers focus, attacker's advantage
+			'33': ('D', 'n'),  # destroyers focus
+		}
+		return combinations_focus_advantage[str(attacker_f) + str(defender_f)]
 
 	@staticmethod
 	def roll_to_hit(ship, n):  # Gets a ship type (S, C or D) and the number of ships of that type
