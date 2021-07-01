@@ -9,20 +9,11 @@ class Request:
 
     # The method takes a string parameter and defines a useful json to return to the battle algorithm
     @staticmethod
-    def define_battle(str_fe):
-        report = json.loads(str_fe)
-        # print(type(report))
-        json_battle = {}
-        for key in report:          # check: during refactoring removed items method
-            if key == 'attacker':
-                for value in report[key]:
-                    if value == "army":
-                        json_battle["attacker"] = dict(report[key][value])
-            elif key == 'defender':
-                for value in report[key]:
-                    if value == "army":
-                        json_battle["defender"] = dict(report[key][value])
-        return json_battle
+    def define_battle(challengers_json_fe):
+        challengers_dict = json.loads(challengers_json_fe)
+        armies = {'attacker': challengers_dict['attacker']['army'],
+                  'defender': challengers_dict['defender']['army']}
+        return armies
 
     def test(self):
         return self.request
