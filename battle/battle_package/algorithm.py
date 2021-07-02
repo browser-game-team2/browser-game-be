@@ -7,12 +7,12 @@ class Battle:
 	def __init__(self, request):
 		self.attacker = request.challengers_armies['attacker']  # parameters of the attacker
 		self.defender = request.challengers_armies['defender']  # parameters of the defender
-		self.focus, self.advantage = Battle.deploy(self)
-		self.special_round = Battle.play_special_round(self)
+		self.focus, self.advantage = self.deploy()
+		self.special_round = self.play_special_round()
 		self.winner = None  # True or False
 		self.army_winner = None	 # example: {"S": 2, "C": 0, "D": 0, "F": 2}
-		self.main_battle = Battle.play_main_battle(self)
-		self.final_report = Battle.generate_final_report(self)
+		self.main_battle = self.play_main_battle()
+		self.final_report = self.generate_final_report()
 
 	# According to the battle formation chosen by each side, deploy() assigns focus to a ship type (B, C or D)
 	# and benefits either attacker, defender or none of them.
