@@ -2,78 +2,22 @@ import random
 from .request import Request
 
 
-class BattleAlgo:
+class Battle:
 
-	@staticmethod
-	# The function takes care of defining a json containing the attacker's parameters
-	def define_attack(report):
-		return report['attacker']
-
-	@staticmethod
-	# The function takes care of defining a json containing the parameters of the defender
-	def define_defender(report):
-		return report['defender']
-
-	@staticmethod
-	def battle(attacker, defender):
-		focus, advantage = BattleAlgo.deploy(attacker['F'], defender['F'])  # see deploy()
-		attacker_alive = True										  # attacking fleet has at least one ship
-		defender_alive = True										  # defending fleet has at least one ship
-		attacker_losses = 0											  # attacking fleet has taken no casualties
-		defender_losses = 0											  # defending fleet has taken no casualties
-		battle_report = {}  										  # set up the report dictionary
-
-		# The following block runs the 0-th turn, where only 'focus' ships of the 'adv' side can attack.
-		if advantage == 'a':
-			# successful rolls by attacker on the focus ship type
-			attacker_hits = BattleAlgo.roll_to_hit(focus, attacker[focus])
-			# defender takes casualties
-			defender_alive, defender_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
-		if advantage == 'd':
-			# successful rolls by defender on the focus ship type
-			defender_hits = BattleAlgo.roll_to_hit(focus, defender[focus])
-			# attacker takes casualties
-			attacker_alive, attacker_losses = BattleAlgo.remove_casualties(attacker, defender_hits)
-		if advantage == 'n':
-			# both players roll to hit on the focus ship type
-			attacker_hits = BattleAlgo.roll_to_hit(focus, attacker[focus])
-			defender_hits = BattleAlgo.roll_to_hit(focus, defender[focus])
-			attacker_alive, attacker_losses = BattleAlgo.remove_casualties(attacker, defender_hits)  # and take casualties
-			defender_alive, defender_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
-		battle_report[0] = {'a': attacker_losses, 'd': defender_losses}			# register casualties in the report
-
-		# The following block runs the main battle.
-		# initialize round count
-		count = 1
-		# while both fleets still have at least one ship
-		while attacker_alive and defender_alive:
-			# initialize hit count at the beginning of each combat round
-			attacker_hits = 0
-			defender_hits = 0
-			for ship_type in attacker.keys():
-				attacker_hits += BattleAlgo.roll_to_hit(ship_type, attacker[ship_type])  # attacker's successful rolls
-			for ship_type in defender.keys():
-				defender_hits += BattleAlgo.roll_to_hit(ship_type, defender[ship_type])  # defender's successful rolls
-			# attacker takes casualties
-			attacker_alive, attacker_losses = BattleAlgo.remove_casualties(attacker, defender_hits)
-			# defender takes casualties
-			defender_alive, defender_losses = BattleAlgo.remove_casualties(defender, attacker_hits)
-			# register casualties in the report
-			battle_report[count] = {'a': attacker_losses, 'd': defender_losses}
-			# Next combat round
-			count += 1
-
-		if attacker_alive:
-			result = True, attacker, battle_report
-		else:
-			result = False, defender, battle_report  # defender wins if both fleets have 0 ships (very unlikely)
-		return result
+	def __init__(self, request):
+		self.attacker = request.challengers_armies['attacker']  # parameters of the attacker
+		self.defender = request.challengers_armies['defender']  # parameters of the defender
+		self.focus, self.advantage = Battle.deploy(self)
+		self.special_round = Battle.play_special_round(self)
+		self.winner = None  # True or False
+		self.army_winner = None	 # example: {"S": 2, "C": 0, "D": 0, "F": 2}
+		self.main_battle = Battle.play_main_battle(self)
+		self.final_report = Battle.generate_final_report(self)
 
 	# According to the battle formation chosen by each side, deploy() assigns focus to a ship type (B, C or D)
 	# and benefits either attacker, defender or none of them.
 	# This affects the special turn at the beginning of the battle.
-	@staticmethod
-	def deploy(attacker_f, defender_f):
+	def deploy(self):
 		combinations_focus_advantage = {
 			'11': ('S', 'n'),  # spaceships focus
 			'12': ('C', 'd'),  # cruisers focus, defender's advantage
@@ -85,7 +29,70 @@ class BattleAlgo:
 			'32': ('D', 'a'),  # destroyers focus, attacker's advantage
 			'33': ('D', 'n'),  # destroyers focus
 		}
-		return combinations_focus_advantage[str(attacker_f) + str(defender_f)]
+		return combinations_focus_advantage[str(self.attacker['F']) + str(self.defender['F'])]
+
+	def play_special_round(self):
+		attacker_losses = 0  # attacking fleet has taken no casualties
+		defender_losses = 0  # defending fleet has taken no casualties
+		# The following block runs the 0-th turn, where only 'focus' ships of the 'advantage' side can attack.
+		if self.advantage == 'a':
+			# successful rolls by attacker on the focus ship type
+			attacker_hits = Battle.roll_to_hit(self.focus, self.attacker[self.focus])
+			# defender takes casualties
+			defender_alive, defender_losses = Battle.remove_casualties(self.defender, attacker_hits)
+		elif self.advantage == 'd':
+			# successful rolls by defender on the focus ship type
+			defender_hits = Battle.roll_to_hit(self.focus, self.defender[self.focus])
+			# attacker takes casualties
+			attacker_alive, attacker_losses = Battle.remove_casualties(self.attacker, defender_hits)
+		elif self.advantage == 'n':
+			# both players roll to hit on the focus ship type
+			attacker_hits = Battle.roll_to_hit(self.focus, self.attacker[self.focus])
+			defender_hits = Battle.roll_to_hit(self.focus, self.defender[self.focus])
+			# and take casualties
+			attacker_alive, attacker_losses = Battle.remove_casualties(self.attacker, defender_hits)
+			defender_alive, defender_losses = Battle.remove_casualties(self.defender, attacker_hits)
+		special_round_report = {0: {'a': attacker_losses, 'd': defender_losses}}  # register casualties in the report
+		return special_round_report
+
+	def play_main_battle(self):
+		# The following block runs the main battle.
+		main_battle_report = {}
+		attacker_alive = True  # attacking fleet has at least one ship
+		defender_alive = True  # defending fleet has at least one ship
+		# initialize round count
+		count = 1
+		# while both fleets still have at least one ship
+		while attacker_alive and defender_alive:
+			# initialize hit count at the beginning of each combat round
+			attacker_hits = 0
+			defender_hits = 0
+			for ship_type in self.attacker.keys():
+				attacker_hits += Battle.roll_to_hit(ship_type, self.attacker[ship_type])  # attacker's successful rolls
+			for ship_type in self.defender.keys():
+				defender_hits += Battle.roll_to_hit(ship_type, self.defender[ship_type])  # defender's successful rolls
+			# attacker takes casualties
+			attacker_alive, attacker_losses = Battle.remove_casualties(self.attacker, defender_hits)
+			# defender takes casualties
+			defender_alive, defender_losses = Battle.remove_casualties(self.defender, attacker_hits)
+			# register casualties in the report
+			main_battle_report[count] = {'a': attacker_losses, 'd': defender_losses}
+			# Next combat round
+			count += 1
+		if attacker_alive:
+			self.winner = True
+			self.army_winner = self.attacker
+		else:
+			self.winner = False
+			self.army_winner = self.defender
+		return main_battle_report
+
+	def generate_final_report(self):
+		return {
+			'winner': self.winner,
+			'army': self.army_winner,
+			'report': {**self.special_round, **self.main_battle}
+		}
 
 	@staticmethod
 	def roll_to_hit(ship, n):  # Gets a ship type (S, C or D) and the number of ships of that type
@@ -135,7 +142,9 @@ if __name__ == "__main__":
 				'"name":"computer 1",' \
 				'"army":{"S":4,"C":8,"D":9,"F":1},' \
 				'"planet":"Mercury"}}'
-	request = Request(inputFE)
-	attacker_dict = BattleAlgo.define_attack(request.request)
-	defender_dict = BattleAlgo.define_defender(request.request)
-	print(BattleAlgo.battle(attacker_dict, defender_dict))
+
+	request_obj = Request(inputFE)
+	current_battle = Battle(request_obj)
+	attacker_dict = current_battle.attacker
+	defender_dict = current_battle.defender
+	print(current_battle.final_report)
