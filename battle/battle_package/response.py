@@ -1,25 +1,28 @@
 from .request import Request
-from .algorithm import BattleAlgo
+from .algorithm import Battle
 import json
 
 
 class Response:
 
-    def __init__(self, result):
-        self.response = Response.define_result(result)
+    def __init__(self, current_battle):
+        self.battle_final_report = Response.json_response(current_battle.final_report)
     
     @staticmethod
-    def define_result(result):
+    def json_response(final_report):
+        """
         json_response = {}
         for i in range(len(result)):
+            print(i)
             if i == 0:
                 json_response["winner"] = result[i]
             if i == 1:
                 json_response["army"] = result[i]
             if i == 2:
                 json_response["report"] = result[i]
-        json_response = json.dumps(json_response)
-        return json_response
+            print(json_response)
+        """
+        return json.dumps(final_report)
 
 
 # Main program
@@ -35,7 +38,6 @@ if __name__ == "__main__":
               '"planet":"Mercury"}}'
 
     request = Request(inputFE)
-    attacker = BattleAlgo.define_attack(request.request)
-    defender = BattleAlgo.define_defender(request.request)
-    battle_result = BattleAlgo.battle(attacker, defender)
-    print(Response.define_result(battle_result))
+    battle = Battle(request)
+    battle_result = battle.final_report
+    print(battle_result)
