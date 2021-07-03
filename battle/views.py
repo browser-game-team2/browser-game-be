@@ -1,37 +1,42 @@
 import json
+import random
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from authentication.authentication_package.auth_data import UserAuth  # check this import
 from .battle_package.request import Request
 from .battle_package.response import Response
 from .battle_package.algorithm import Battle
+from army.army_package.army import Army
 
 
 # TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
-input_fe = '{"attacker":{"type":"human",' \
-           '"name":"player x",' \
-           '"mail":"player@mail.com",' \
-           '"army":{"S":24,"C":1,"D":1,"F":1},' \
-           '"planet":"Venus"},' \
-           '"defender":{"type":"virtual",' \
-           '"name":"computer 1",' \
-           '"army":{"S":7,"C":8,"D":9,"F":2},' \
-           '"planet":"Mercury"}}'
-
-
-def index(request):
-    message = "Welcome! Go to --> https://browsergameteam2.herokuapp.com/accounts/google/login/"
-    return HttpResponse(message, status=200)
+# input_fe = '{"attacker":{"type":"human",' \
+#           '"name":"player x",' \
+#           '"mail":"player@mail.com",' \
+#           '"army":{"S":24,"C":1,"D":1,"F":1},' \
+#           '"planet":"Venus"},' \
+#           '"defender":{"type":"virtual",' \
+#           '"name":"computer 1",' \
+#           '"army":{"S":7,"C":8,"D":9,"F":2},' \
+#           '"planet":"Mercury"}}'
 
 
 def battle(request):
     # json_str = request.POST.get('data', '')
-    battle_request = Request(input_fe)  # in production replace input_fe with json_str
+    army_attacker = Army()  # random generation (in production remove)
+    army_defender = Army()  # random generation (in production remove)
+    input_like_fe = Army.creation_input_like_fe(army_attacker, army_defender)  # in production remove
+    battle_request = Request(input_like_fe)  # in production replace input_fe with json_str
     current_battle = Battle(battle_request)  # OBJ type Battle
     response = Response(current_battle)  # OBJ type Response
     battle_response = response.battle_final_report
     return HttpResponse(battle_response, status=200, content_type='application/json')
     # return HttpResponse(TEST_JSON, status=200, content_type='application/json')
+
+
+def index(request):
+    message = "Welcome! Go to --> https://browsergameteam2.herokuapp.com/accounts/google/login/"
+    return HttpResponse(message, status=200)
 
 
 # the following (test) code is accessible only if the user is already logged in
