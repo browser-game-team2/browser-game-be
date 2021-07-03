@@ -20,63 +20,24 @@ from army.army_package.army import Army
 #           '"army":{"S":7,"C":8,"D":9,"F":2},' \
 #           '"planet":"Mercury"}}'
 
-def creation_input_fe_random(n_army):
-    for i in range(n_army):
-        army_random_att = Army(random.randint(1, 100), random.randint(1, 100), random.randint(1, 100),
-                               random.randint(1, 3))
-        army_random_def = Army(random.randint(1, 100), random.randint(1, 100), random.randint(1, 100),
-                               random.randint(1, 3))
-        input_fe =  '{"attacker":{"type":"human",' \
-                    '"name":"player x",' \
-                    '"mail":"player@mail.com",' \
-                    '"army":{' + f'{army_random_att}' + '},' \
-                    '"planet":"Venus"},' \
-                    '"defender":{"type":"virtual",' \
-                    '"name":"computer 1",' \
-                    '"army":{' + f'{army_random_def}' + '},' \
-                    '"planet":"Mercury"}}'
-        yield input_fe
+
+def battle(request):
+    # json_str = request.POST.get('data', '')
+    army_attacker = Army()  # random generation (in production remove)
+    army_defender = Army()  # random generation (in production remove)
+    input_like_fe = Army.creation_input_like_fe(army_attacker, army_defender)  # in production remove
+    battle_request = Request(input_like_fe)  # in production replace input_fe with json_str
+    current_battle = Battle(battle_request)  # OBJ type Battle
+    response = Response(current_battle)  # OBJ type Response
+    battle_response = response.battle_final_report
+    return HttpResponse(battle_response, status=200, content_type='application/json')
+    # return HttpResponse(TEST_JSON, status=200, content_type='application/json')
 
 
 def index(request):
     message = "Welcome! Go to --> https://browsergameteam2.herokuapp.com/accounts/google/login/"
     return HttpResponse(message, status=200)
 
-
-# def battle(request):
-    # json_str = request.POST.get('data', '')
-    # battle_request = Request(input_fe)  # in production replace input_fe with json_str
-    # current_battle = Battle(battle_request)  # OBJ type Battle
-    # response = Response(current_battle)  # OBJ type Response
-    # battle_response = response.battle_final_report
-    # return HttpResponse(battle_response, status=200, content_type='application/json')
-    # return HttpResponse(TEST_JSON, status=200, content_type='application/json')
-
-def battle(request):
-    # json_str = request.POST.get('data', '')
-    # create a generator with parameters for statistics and create a list with that values
-    armies = list(creation_input_fe_random(1))
-    # in production use this armies
-    # armies = [json.loads(json_str)]
-    battles_responses = []
-    val_battles = {'wins_attacker': 0, 'wins_defender': 0}
-    for army in armies:
-        battle_request = Request(army)
-        current_battle = Battle(battle_request)  # OBJ type Battle
-        response = Response(current_battle)  # OBJ type Response
-        battle_response = response.battle_final_report
-        battles_responses.append(battle_response)
-    # for statistic see who winner victory
-    for battle in battles_responses:
-        if 'true' in battle:
-            val_battles['wins_attacker'] += 1
-        else:
-            val_battles['wins_defender'] += 1
-    # use this val_response to see the stats and a the actually army value for each player
-    # val_response = val_battles.items(), battles_responses
-    # default val_response
-    val_response = battles_responses
-    return HttpResponse(val_response, status=200, content_type='application/json')
 
 # the following (test) code is accessible only if the user is already logged in
 # if the user is not logged in, they will be displayed an unauthorized message (401)
