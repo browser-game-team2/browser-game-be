@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from authentication.authentication_package.auth_data import UserAuth  # check this import
 from .battle_package.request import Request
 from .battle_package.response import Response
-from .battle_package.algorithm import BattleAlgo
+from .battle_package.algorithm import Battle
 
 
 # TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
@@ -26,13 +26,10 @@ def index(request):
 
 def battle(request):
     # json_str = request.POST.get('data', '')
-    request = Request(input_fe)  # in production replace input_fe with json_str
-    attacker = BattleAlgo.define_attack(request.request)
-    defender = BattleAlgo.define_defender(request.request)
-    battle_result = BattleAlgo.battle(attacker, defender)
-    response = Response(battle_result)
-    battle_response = response.response
-    # print(battle_response)
+    battle_request = Request(input_fe)  # in production replace input_fe with json_str
+    current_battle = Battle(battle_request)  # OBJ type Battle
+    response = Response(current_battle)  # OBJ type Response
+    battle_response = response.battle_final_report
     return HttpResponse(battle_response, status=200, content_type='application/json')
     # return HttpResponse(TEST_JSON, status=200, content_type='application/json')
 

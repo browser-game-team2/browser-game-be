@@ -4,28 +4,16 @@ import json
 class Request:
     # We pass a string type parameter to our constructor method,
     # which will take care of returning a useful json
-    def __init__(self, str_fe):
-        self.request = Request.define_battle(str_fe)
+    def __init__(self, request_fe):
+        self.challengers_armies = Request.define_challengers(request_fe)
 
     # The method takes a string parameter and defines a useful json to return to the battle algorithm
     @staticmethod
-    def define_battle(str_fe):
-        report = json.loads(str_fe)
-        # print(type(report))
-        json_battle = {}
-        for key in report:          # check: during refactoring removed items method
-            if key == 'attacker':
-                for value in report[key]:
-                    if value == "army":
-                        json_battle["attacker"] = dict(report[key][value])
-            elif key == 'defender':
-                for value in report[key]:
-                    if value == "army":
-                        json_battle["defender"] = dict(report[key][value])
-        return json_battle
-
-    def test(self):
-        return self.request
+    def define_challengers(request_fe):
+        challengers_dict = json.loads(request_fe)
+        challengers_armies = {'attacker': challengers_dict['attacker']['army'],
+                              'defender': challengers_dict['defender']['army']}
+        return challengers_armies
 
 
 # Main program
@@ -40,4 +28,4 @@ if __name__ == "__main__":
               '"army":{"S":4,"C":8,"D":9,"F":1},' \
               '"planet":"Mercury"}}'
     request = Request(inputFE)
-    print(Request.test(request))
+    print(request.challengers_armies)
