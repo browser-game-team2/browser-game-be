@@ -63,7 +63,7 @@ def choose(request):
     data = {'username': user_auth.username,
             'token': user_auth.token,
             'uid': user_auth.uid,
-            'unities': {"S": 6, "C": 15, "D": 30},
+            'prices': {"S": 5, "C": 2, "D": 1},
             "F": [1, 2, 3],
             "budget": 30}
 
