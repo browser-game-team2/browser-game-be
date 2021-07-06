@@ -6,7 +6,7 @@ from authentication.authentication_package.auth_data import UserAuth  # check th
 from .battle_package.request import Request
 from .battle_package.response import Response
 from .battle_package.algorithm import Battle
-from army.army_package.army import Army
+from army.army_package.army import Army, SpaceShip, SpaceCruiser, SpaceDestroyer
 
 
 # TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
@@ -63,9 +63,10 @@ def choose(request):
     data = {'username': user_auth.username,
             'token': user_auth.token,
             'uid': user_auth.uid,
-            'unities': {"S": 6, "C": 15, "D": 30},
+            'prices': {"S": SpaceShip().price, "C": SpaceCruiser().price, "D": SpaceDestroyer().price},
             "F": [1, 2, 3],
             "budget": 30}
+
 
     data_as_json = json.dumps(data)
     return HttpResponse(data_as_json, status=200, content_type='application/json')
