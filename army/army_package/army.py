@@ -2,6 +2,7 @@ import random
 
 
 class Army:
+
     def __init__(self):
         self.space_ship = random.randint(1, 100)
         self.space_cruiser = random.randint(1, 100)
@@ -24,3 +25,21 @@ class Army:
                         '"army":{' + f'{army_defender}' + '},' \
                         '"planet":"Mercury"}}'
         return input_like_fe
+
+
+class SpaceShip:
+
+    def __init__(self):
+        self.price = 5
+
+
+class SpaceCruiser:
+
+    def __init__(self):
+        self.price = 2
+
+
+class SpaceDestroyer:
+
+    def __init__(self):
+        self.price = 1
