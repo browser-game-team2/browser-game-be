@@ -15,6 +15,8 @@ class Army:
     # generate input like FE
     @staticmethod
     def creation_input_like_fe(army_attacker, army_defender):
+        if not isinstance(army_attacker, Army) and not isinstance(army_defender, Army):
+            raise ValueError("Object error")
         input_like_fe = '{"attacker":{"type":"human",' \
                         '"name":"player x",' \
                         '"mail":"player@mail.com",' \
