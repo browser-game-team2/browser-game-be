@@ -65,8 +65,9 @@ def choose(request):
             'uid': user_auth.uid,
             'prices': {"S": SpaceShip().price, "C": SpaceCruiser().price, "D": SpaceDestroyer().price},
             "F": [1, 2, 3],
-            "budget": 30}
-
+            'budget': 30,
+            'planets': ['Earth', 'Jupiter', 'Mars', 'Mercury', 'Neptune', 'Saturn', 'Uranus', 'Venus']
+            }
 
     data_as_json = json.dumps(data)
     return HttpResponse(data_as_json, status=200, content_type='application/json')
