@@ -58,6 +58,14 @@ class BattleTestCase(TestCase):
     def test_battle_special_round(self):
         self.assertIn(self.battle.focus, ['S', 'C', 'D'])
         self.assertIn(self.battle.advantage, ['a', 'd', 'n'])
+        self.assertIsInstance(self.battle.special_round, dict)
+        self.assertEqual(len(self.battle.special_round), 1)
+        self.assertIn(0, self.battle.special_round.keys())
+        self.assertIsInstance(self.battle.special_round[0], dict)
+        self.assertIn('a', self.battle.special_round[0].keys())
+        self.assertIn('d', self.battle.special_round[0].keys())
+        self.assertIsInstance(self.battle.special_round[0]['a'], int)
+        self.assertIsInstance(self.battle.special_round[0]['d'], int)
 
     def test_battle_main_battle(self):
         pass
