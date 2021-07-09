@@ -68,5 +68,11 @@ class BattleTestCase(TestCase):
         self.assertIsInstance(self.battle.special_round[0]['d'], int)
 
     def test_battle_main_battle(self):
-        pass
-
+        self.assertIsInstance(self.battle.main_battle, dict)
+        self.assertGreaterEqual(len(self.battle.main_battle), 1)
+        for i in range(len(self.battle.main_battle)):
+            self.assertIsInstance(self.battle.main_battle[i+1], dict)
+            self.assertIn('a', self.battle.main_battle[i+1].keys())
+            self.assertIn('d', self.battle.main_battle[i+1].keys())
+            self.assertIsInstance(self.battle.main_battle[i+1]['a'], int)
+            self.assertIsInstance(self.battle.main_battle[i+1]['d'], int)
