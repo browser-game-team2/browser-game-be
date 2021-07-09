@@ -159,6 +159,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 SITE_ID = 1
-LOGIN_REDIRECT_URL = 'https://fervent-ritchie-10e796.netlify.app/'  # previously was /choose/
+LOGIN_REDIRECT_URL = 'https://modest-almeida-b3a50e.netlify.app/battle__page'  # not official
 
 django_heroku.settings(locals())
