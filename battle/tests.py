@@ -76,3 +76,15 @@ class BattleTestCase(TestCase):
             self.assertIn('d', self.battle.main_battle[i+1].keys())
             self.assertIsInstance(self.battle.main_battle[i+1]['a'], int)
             self.assertIsInstance(self.battle.main_battle[i+1]['d'], int)
+
+    def test_final_report(self):
+        self.assertIsInstance(self.battle.final_report, dict)
+        self.assertEqual(len(self.battle.final_report), 3)
+        self.assertIn('winner', self.battle.final_report.keys())
+        self.assertIn('army', self.battle.final_report.keys())
+        self.assertIn('report', self.battle.final_report.keys())
+        # Test again? how deeply?
+        self.assertIsInstance(self.battle.final_report['winner'], bool)
+        self.assertIsInstance(self.battle.final_report['army'], dict)
+        self.assertIsInstance(self.battle.final_report['report'], dict)
+
