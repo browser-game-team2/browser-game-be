@@ -51,11 +51,17 @@ def battle(request):
 
 
 def battle_temp(request):  # does not require login (useful for FE tests)
-    army_attacker = Army()
-    army_defender = Army()
-    input_like_fe = Army.creation_input_like_fe(army_attacker, army_defender)
-    battle_request = Request(input_like_fe)
-    current_battle = Battle(battle_request)  # OBJ type Battle
+    json_str_battle = request.POST.get('data', '')
+    if json_str_battle:
+        battle_request = Request(json_str_battle)
+        current_battle = Battle(battle_request)
+    else:  # in case FE temporarily does not send us the JSON (test code)
+        army_attacker = Army()  # random generation (in production remove)
+        army_defender = Army()  # random generation (in production remove)
+        input_like_fe = Army.creation_input_like_fe(army_attacker, army_defender)  # in production remove
+        battle_request = Request(input_like_fe)  # in production replace input_fe with json_str
+        current_battle = Battle(battle_request)  # OBJ type Battle
+
     response = Response(current_battle)  # OBJ type Response
     battle_response = response.battle_final_report
     return HttpResponse(battle_response, status=200, content_type='application/json')
