@@ -63,8 +63,22 @@ def battle_temp(request):  # does not require login (useful for FE tests)
               "army":{"S":3,"C":5,"D":5,"F":2},
               "planet":"Venus"},
               "token":"abcd.FAKETOKENnafk48598258gnfmn43849gnfureufjjurjru383574n3jkf"}
+
+
+    request = '{"attacker":' \
+              '{"type":"Human",' \
+              '"username":"fake user",' \
+              '"army":' \
+              '{"S":1,"C":1,"D":1,"F":1},' \
+              '"planet":"Earth"},' \
+              '"defender":{"type":"virtual",' \
+              '"username":"Computer1",' \
+              '"army":{"S":3,"C":5,"D":5,"F":2},' \
+              '"planet":"Venus"},' \
+              '"token":"abcd.FAKETOKENnafk48598258gnfmn43849gnfureufjjurjru383574n3jkf"}'
     """
-    battle_request = Request(request)
+    json_request = json.loads(request)
+    battle_request = Request(json_request)
     current_battle = Battle(battle_request)
 
     response = Response(current_battle)  # OBJ type Response
