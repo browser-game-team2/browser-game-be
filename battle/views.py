@@ -77,7 +77,7 @@ def battle_temp(request):  # does not require login (useful for FE tests)
               '"planet":"Venus"},' \
               '"token":"abcd.FAKETOKENnafk48598258gnfmn43849gnfureufjjurjru383574n3jkf"}'
     """
-    json_request = json.loads(request)
+    json_request = json.loads(request.body)
     battle_request = Request(json_request)
     current_battle = Battle(battle_request)
 
