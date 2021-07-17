@@ -1,6 +1,35 @@
 # Browser Game
 
-## Battle Rules
+## Project Structure
+The project is built in Django.\
+Three different Django apps were created 
+to handle different features: *authentication*, *army*, *battle*.\
+Database SQLite3 was used for local development, converted to
+PostgreSQL in production (Heroku deploy).\
+OOP and unit testing were used throughout the project.\
+The back-end is deployed at https://browsergameteam2.herokuapp.com/
+
+### authentication
+oAuth is used, through Django *all-auth* package.\
+The `UserAuth` class inside the *authentication_package* is used to
+get authentication data from the database, for example the social token.\
+Currently the user can login via Google.
+
+### army
+At the moment the *army_package* includes an `Army` class, which generates random
+armies, and one class for each type of troup: `SpaceShip`, `SpaceCruiser`
+and `SpaceDestroyer`. An instance of each class will return the
+pricing of that specific troup.
+
+### battle
+This is the core feature for handling the battle phase of the game.\
+The back-end will receive a JSON from the front-end, including the user army
+as well as the cpu army. A battle will be then triggered, handled by the 
+`Battle` class of the *battle_package*. The algorithm will generate the result
+of the battle, with information about the winner, the remaining army of the winner and
+a detailed report of what happened during the battle.
+
+##### Battle Rules
 
 The `battle()` function simulates a battle between two space fleets.
 
@@ -53,3 +82,24 @@ This sequence is repeated as long as there are ships on both sides.
 
 It is possible, although very unlikely, that the defender may win with an empty fleet,
 in case both contenders wiped each other out in the same round.
+
+## REST APIs
+Two main endpoints are used: */choose/* and */battle/*.\
+After a successful login with oAuth, the /choose/ API will return
+authentication data of that user, together with: the overall budget, 
+the pricing of the available troups, the available planets,
+the possible strategies to adopt during the battle.\
+The /battle/ API will return the result of the battle. It requires
+information to be passed in order to return the result. Those information
+are the army of both the attacker and the defender.\
+Both APIs require the user to be logged in in order to work.
+If the user is not logged in, the API will redirect to the
+*/not_authenticated/* endpoint.
+
+## Tests
+Unit tests were used. Each Test Case is written in its own
+Django app.\
+For example, tests for the battle algorithm were added inside
+*battle/tests.py*.\
+All tests can be launched with the single command: `python manage.py test`.
+ 

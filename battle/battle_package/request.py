@@ -10,7 +10,7 @@ class Request:
     # The method takes a string parameter and defines a useful json to return to the battle algorithm
     @staticmethod
     def define_challengers(request_fe):
-        challengers_dict = json.loads(request_fe)
+        challengers_dict = request_fe
         challengers_armies = {'attacker': challengers_dict['attacker']['army'],
                               'defender': challengers_dict['defender']['army']}
         return challengers_armies
