@@ -64,7 +64,6 @@ def battle_temp(request):  # does not require login (useful for FE tests)
               "planet":"Venus"},
               "token":"abcd.FAKETOKENnafk48598258gnfmn43849gnfureufjjurjru383574n3jkf"}
 
-
     request = '{"attacker":' \
               '{"type":"Human",' \
               '"username":"fake user",' \
@@ -77,10 +76,13 @@ def battle_temp(request):  # does not require login (useful for FE tests)
               '"planet":"Venus"},' \
               '"token":"abcd.FAKETOKENnafk48598258gnfmn43849gnfureufjjurjru383574n3jkf"}'
     """
+
+    if not (request.method == 'POST'):
+        return HttpResponseBadRequest("Bad request")
+
     json_request = json.loads(request.body)
     battle_request = Request(json_request)
     current_battle = Battle(battle_request)
-
     response = Response(current_battle)  # OBJ type Response
     battle_response = response.battle_final_report
     return HttpResponse(battle_response, status=200, content_type='application/json')
