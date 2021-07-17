@@ -5,7 +5,7 @@ from authentication.authentication_package.auth_data import UserAuth  # check th
 from .battle_package.request import Request
 from .battle_package.response import Response
 from .battle_package.algorithm import Battle
-from army.army_package.army import Army, SpaceShip, SpaceCruiser, SpaceDestroyer
+from army.army_package.army import SpaceShip, SpaceCruiser, SpaceDestroyer
 
 
 # TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
@@ -29,29 +29,18 @@ def index(request):
 @login_required(login_url='/not_authenticated')
 def battle(request):
     """
-    # the following check will be needed in production
-    if not request.method == 'POST':
-         return HttpResponseBadRequest("Bad request")
-    json_str_battle = request.POST.get('data', '')
-    # the following check will be needed in production (after replacing the army random generation)
-    if not "attacker" in json.loads(json_str_battle) or not "defender" in json.loads(json_str_battle):
-         return HttpResponseBadRequest("Bad request")
-    if json_str_battle:
-        battle_request = Request(json_str_battle)
-        current_battle = Battle(battle_request)
-    else:  # in case FE temporarily does not send us the JSON (test code)
-        army_attacker = Army()  # random generation (in production remove)
-        army_defender = Army()  # random generation (in production remove)
-        input_like_fe = Army.creation_input_like_fe(army_attacker, army_defender)  # in production remove
-        battle_request = Request(input_like_fe)  # in production replace input_fe with json_str
-        current_battle = Battle(battle_request)  # OBJ type Battle
+    # in case FE temporarily does not send us the JSON (test code)
+    army_attacker = Army()  # random generation (in production remove)
+    army_defender = Army()  # random generation (in production remove)
+    input_like_fe = Army.creation_input_like_fe(army_attacker, army_defender)  # in production remove
+    battle_request = Request(input_like_fe)  # in production replace input_fe with json_str
+    current_battle = Battle(battle_request)  # OBJ type Battle
    """
-
     if not (request.method == 'POST'):
         return HttpResponseBadRequest("Bad request")
 
     json_request = json.loads(request.body)
-    battle_request = Request(json_request)
+    battle_request = Request(json_request)  # a dictionary is passed to the Request
     current_battle = Battle(battle_request)
 
     response = Response(current_battle)  # OBJ type Response
@@ -100,9 +89,8 @@ def battle_temp(request):  # does not require login (useful for FE tests)
 # if the user is not logged in, they will be displayed an unauthorized message (401)
 @login_required(login_url='/not_authenticated')
 def choose(request):
-    # the following will be needed in production
-    # if not request.method == 'GET':
-    #     return HttpResponseBadRequest("Bad request")
+    if not request.method == 'GET':
+        return HttpResponseBadRequest("Bad request")
     user_auth = UserAuth(request)
     '''
     # print(request.user)

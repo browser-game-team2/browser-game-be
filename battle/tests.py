@@ -1,12 +1,13 @@
 from django.test import TestCase
 from .battle_package.algorithm import Battle
 from .battle_package.request import Request
+import json
 
 
 class BattleTestCase(TestCase):
 
     def setUp(self) -> None:
-        self.inputFE = '{"attacker": {"type": "human", ' \
+        self.inputFE = json.loads('{"attacker": {"type": "human", ' \
                                '"name": "player x", ' \
                                '"mail": "player@mail.com", ' \
                                '"army": {"S": 5, "C": 7, "D": 1, "F": 1}, ' \
@@ -14,7 +15,7 @@ class BattleTestCase(TestCase):
                                '"defender": {"type": "virtual", ' \
                                '"name": "computer 1", ' \
                                '"army": {"S": 4, "C": 8, "D": 9, "F": 1}, ' \
-                               '"planet": "Mercury"}}'
+                               '"planet": "Mercury"}}')
         self.request = Request(self.inputFE)
         self.battle = Battle(self.request)
 
