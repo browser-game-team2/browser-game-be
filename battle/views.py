@@ -6,6 +6,7 @@ from .battle_package.request import Request
 from .battle_package.response import Response
 from .battle_package.algorithm import Battle
 from army.army_package.army import SpaceShip, SpaceCruiser, SpaceDestroyer
+from django.views.decorators.csrf import csrf_exempt
 
 
 # TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
@@ -26,6 +27,7 @@ def index(request):
 
 
 # if the user is not logged in, they will be displayed an unauthorized message (401)
+# @csrf_exempt
 #@login_required(login_url='/not_authenticated')
 def battle(request):
     """
@@ -40,12 +42,15 @@ def battle(request):
         return HttpResponseBadRequest("Bad request")
 
     json_request = json.loads(request.body)
-    battle_request = Request(json_request)  # a dictionary is passed to the Request
-    current_battle = Battle(battle_request)
+    if json_request["defender"]["army"]:
+        battle_request = Request(json_request)  # a dictionary is passed to the Request
+        current_battle = Battle(battle_request)
 
-    response = Response(current_battle)  # OBJ type Response
-    battle_response = response.battle_final_report
-    return HttpResponse(battle_response, status=200, content_type='application/json')
+        response = Response(current_battle)  # OBJ type Response
+        battle_response = response.battle_final_report
+        return HttpResponse(battle_response, status=200, content_type='application/json')
+    else:
+        return HttpResponseBadRequest("Bad request")
 
 
 def battle_temp(request):  # does not require login (useful for FE tests)
