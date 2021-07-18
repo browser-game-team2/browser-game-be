@@ -42,6 +42,7 @@ def battle(request):
         return HttpResponseBadRequest("Bad request")
 
     json_request = json.loads(request.body)
+    print(json_request)
     if json_request["defender"]["army"]:
         battle_request = Request(json_request)  # a dictionary is passed to the Request
         current_battle = Battle(battle_request)
