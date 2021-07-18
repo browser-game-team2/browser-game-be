@@ -29,7 +29,7 @@ def index(request):
 
 # if the user is not logged in, they will be displayed an unauthorized message (401)
 # @csrf_exempt
-@login_required(login_url='/not_authenticated')
+#@login_required(login_url='/not_authenticated')
 def battle(request):
     """
     # in case FE temporarily does not send us the JSON (test code)
@@ -104,15 +104,15 @@ def choose(request):
     if not request.method == 'GET':
         return HttpResponseBadRequest("Bad request")
     ### test code ###
-    # data = {'username': 'fake user',
-    #         'token': 'fake_142524523515fjgnjdgn',
-    #         'prices': {'S': 5, 'C': 2, 'D': 1},
-    #         "F": [1, 2, 3],
-    #         'budget': 30,
-    #         'planets': ['Earth', 'Jupiter', 'Mars', 'Mercury', 'Neptune', 'Saturn', 'Uranus', 'Venus']}
-    #         #################
-    # data_as_json = json.dumps(data)
-    # return HttpResponse(data_as_json, status=200, content_type='application/json')
+    data = {'username': 'fake user',
+            'token': 'fake_142524523515fjgnjdgn',
+            'prices': {'S': 5, 'C': 2, 'D': 1},
+            "F": [1, 2, 3],
+            'budget': 30,
+            'planets': ['Earth', 'Jupiter', 'Mars', 'Mercury', 'Neptune', 'Saturn', 'Uranus', 'Venus']}
+            #################
+    data_as_json = json.dumps(data)
+    return HttpResponse(data_as_json, status=200, content_type='application/json')
 
     user_auth = UserAuth(request)
     '''
