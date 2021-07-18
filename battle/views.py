@@ -26,7 +26,7 @@ def index(request):
 
 
 # if the user is not logged in, they will be displayed an unauthorized message (401)
-@login_required(login_url='/not_authenticated')
+#@login_required(login_url='/not_authenticated')
 def battle(request):
     """
     # in case FE temporarily does not send us the JSON (test code)
@@ -87,7 +87,7 @@ def battle_temp(request):  # does not require login (useful for FE tests)
 
 
 # if the user is not logged in, they will be displayed an unauthorized message (401)
-@login_required(login_url='/not_authenticated')
+#@login_required(login_url='/not_authenticated')
 def choose(request):
     if not request.method == 'GET':
         return HttpResponseBadRequest("Bad request")
