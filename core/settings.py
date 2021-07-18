@@ -171,7 +171,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
-LOGIN_REDIRECT_URL = 'https://browsergameteam2.netlify.app/battle__page'  # not official -> ./choose/
+LOGIN_REDIRECT_URL = '/choose/'  # not official -> ./choose/
 
 
 # Activate Django-Heroku
