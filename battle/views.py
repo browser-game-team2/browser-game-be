@@ -98,7 +98,7 @@ def battle_temp(request):  # does not require login (useful for FE tests)
 
 
 # if the user is not logged in, they will be displayed an unauthorized message (401)
-@login_required(login_url='/not_authenticated')
+#@login_required(login_url='/not_authenticated')
 def choose(request):
     print(request.headers)
     if not request.method == 'GET':
