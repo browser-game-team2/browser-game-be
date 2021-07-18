@@ -6,6 +6,7 @@ from .battle_package.request import Request
 from .battle_package.response import Response
 from .battle_package.algorithm import Battle
 from army.army_package.army import SpaceShip, SpaceCruiser, SpaceDestroyer
+from army.army_package.army_for_test import generate_random_army
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -44,6 +45,9 @@ def battle(request):
     json_request = json.loads(request.body)
     print(json_request)
     if json_request["defender"]["army"]:
+        # temporarily overwriting sent defender's army !
+        json_request["defender"]["army"] = generate_random_army()  # an army with an overall value of 30 is returned
+        ##############################################
         battle_request = Request(json_request)  # a dictionary is passed to the Request
         current_battle = Battle(battle_request)
 
