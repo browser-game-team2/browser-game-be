@@ -41,13 +41,14 @@ def battle(request):
    """
     if not (request.method == 'POST'):
         return HttpResponseBadRequest("Bad request")
-
     json_request = json.loads(request.body)
     print(json_request)
+    print()
     if json_request["defender"]["army"]:
         # temporarily overwriting sent defender's army !
         json_request["defender"]["army"] = generate_random_army()  # an army with an overall value of 30 is returned
         ##############################################
+        print(json_request)
         battle_request = Request(json_request)  # a dictionary is passed to the Request
         current_battle = Battle(battle_request)
 
