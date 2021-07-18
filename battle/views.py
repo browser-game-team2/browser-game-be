@@ -91,6 +91,17 @@ def battle_temp(request):  # does not require login (useful for FE tests)
 def choose(request):
     if not request.method == 'GET':
         return HttpResponseBadRequest("Bad request")
+    ### test code ###
+    data = {'username': 'fake user',
+            'token': 'fake_142524523515fjgnjdgn',
+            'prices': {'S': 5, 'C': 2, 'D': 1},
+            "F": [1, 2, 3],
+            'budget': 30,
+            'planets': ['Earth', 'Jupiter', 'Mars', 'Mercury', 'Neptune', 'Saturn', 'Uranus', 'Venus']}
+            #################
+    data_as_json = json.dumps(data)
+    return HttpResponse(data_as_json, status=200, content_type='application/json')
+
     user_auth = UserAuth(request)
     '''
     # print(request.user)
