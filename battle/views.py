@@ -8,6 +8,7 @@ from .battle_package.algorithm import Battle
 from army.army_package.army import SpaceShip, SpaceCruiser, SpaceDestroyer
 from army.army_package.army_for_test import generate_random_army
 from django.views.decorators.csrf import csrf_exempt
+import copy
 
 
 # TEST_JSON = '{"winner":true,"army":{"S":0,"C":1,"D":2},"report":{"1":{"a":3,"d":1},"2":{"a":2,"d":1}}}'
@@ -42,19 +43,27 @@ def battle(request):
     if not (request.method == 'POST'):
         return HttpResponseBadRequest("Bad request")
     json_request = json.loads(request.body)
-    print(json_request)
+    #print(json_request)  # incoming request for the battle
     print()
     if json_request["defender"]["army"]:
         # temporarily overwriting sent defender's army !
-        json_request["defender"]["army"] = generate_random_army()  # an army with an overall value of 30 is returned
+        random_defender_army = generate_random_army()
+        initial_d_army = copy.deepcopy(random_defender_army)  # copied because it will be added to thi final json
+        json_request["defender"]["army"] = random_defender_army  # an army with an overall value of 30 is returned
         ##############################################
-        print(json_request)
+        print(json_request)  # updated battle request (the defender army is overwritten by BE)
         battle_request = Request(json_request)  # a dictionary is passed to the Request
         current_battle = Battle(battle_request)
-
         response = Response(current_battle)  # OBJ type Response
         battle_response = response.battle_final_report
-        return HttpResponse(battle_response, status=200, content_type='application/json')
+        # temporarily adding the initial defender army inside the battle response
+        battle_response_as_json = json.loads(battle_response)
+        battle_response_as_json["init_d_army"] = initial_d_army
+        battle_response_final = json.dumps(battle_response_as_json)
+        print()
+        print(battle_response)
+        ##########################################################################
+        return HttpResponse(battle_response_final, status=200, content_type='application/json')
     else:
         return HttpResponseBadRequest("Bad request")
 
