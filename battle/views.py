@@ -44,11 +44,12 @@ def battle(request):
         return HttpResponseBadRequest("Bad request")
     json_request = json.loads(request.body)
     #print(json_request)  # incoming request for the battle
-    print()
-    if json_request["defender"]["army"]:
+    #print()
+    if json_request["defender"]["army"] and json_request["attacker"]["army"]:
         # temporarily overwriting sent defender's army !
         random_defender_army = generate_random_army()
         initial_d_army = copy.deepcopy(random_defender_army)  # copied because it will be added to thi final json
+        initial_a_army = copy.deepcopy(json_request["attacker"]["army"])
         json_request["defender"]["army"] = random_defender_army  # an army with an overall value of 30 is returned
         ##############################################
         print(json_request)  # updated battle request (the defender army is overwritten by BE)
@@ -58,7 +59,8 @@ def battle(request):
         battle_response = response.battle_final_report
         # temporarily adding the initial defender army inside the battle response
         battle_response_as_json = json.loads(battle_response)
-        battle_response_as_json["init_d_army"] = initial_d_army
+        battle_response_as_json["init_d_army"] = initial_d_army  # initial defender army
+        battle_response_as_json["init_a_army"] = initial_a_army  # initial attacker army
         battle_response_final = json.dumps(battle_response_as_json)
         print()
         print(battle_response)
