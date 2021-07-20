@@ -46,6 +46,7 @@ def battle(request):
     #print(json_request)  # incoming request for the battle
     #print()
     if json_request["defender"]["army"] and json_request["attacker"]["army"]:
+        planets = [json_request["attacker"]["planet"], json_request["defender"]["planet"]]
         # temporarily overwriting sent defender's army !
         random_defender_army = generate_random_army()
         initial_d_army = copy.deepcopy(random_defender_army)  # copied because it will be added to thi final json
@@ -61,6 +62,7 @@ def battle(request):
         battle_response_as_json = json.loads(battle_response)
         battle_response_as_json["init_d_army"] = initial_d_army  # initial defender army
         battle_response_as_json["init_a_army"] = initial_a_army  # initial attacker army
+        battle_response_as_json["planets"] = planets  # first is attacker's planet, second is defender's
         battle_response_final = json.dumps(battle_response_as_json)
         print()
         print(battle_response)
