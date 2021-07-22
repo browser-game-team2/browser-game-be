@@ -42,7 +42,7 @@ SOCIALACCOUNT_PROVIDERS = \
 SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", default=False)
+DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -171,7 +171,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
-LOGIN_REDIRECT_URL = 'https://modest-almeida-b3a50e.netlify.app/battle__page'  # not official -> ./choose/
+LOGIN_REDIRECT_URL = '/oauth/'  # this triggers the view called user_logged_in_ where authentication data are retrieved and sent to FE
 
 
 # Activate Django-Heroku
