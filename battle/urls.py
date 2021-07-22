@@ -1,5 +1,5 @@
 from django.urls import path
-from battle.views import battle, choose, not_authenticated, index, battle_temp, choose_temp
+from battle.views import battle, choose, not_authenticated, index, battle_temp, choose_temp, user_logged_in_
 
 
 urlpatterns = [
@@ -10,4 +10,7 @@ urlpatterns = [
 
     path('battletemp/', battle_temp, name='battle_temp'),
     path('choosetemp/', choose_temp, name='choose_temp'),
+
+    path('oauth/', user_logged_in_),  # used to trigger view that retrieves auth data
+
 ]
